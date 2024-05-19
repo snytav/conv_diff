@@ -91,9 +91,18 @@ A=afference_matrix(n_el,dof_el)
 el = [Element(dof_el) for n in range(n_el)]
 
 # Element mass matrix
-from matrix import element_mass_matrix
+from matrix import element_mass_matrix,element_convection_matrix,element_diffusion_matrix
 for n in range(n_el):
     el[n].M=element_mass_matrix(dof_el,n_gauss,N,W,w,J)
+
+# Element convection matrix
+for n in range(n_el):
+    el[n].C=element_convection_matrix(a_arr[n],dof_el,n_gauss,dN,W,w,J)
+
+# Element diffusion matrix
+for n in range(n_el):
+    el[n].K=element_diffusion_matrix(v_arr[n],dof_el,n_gauss,dN,dW,w,J)
+
 
 
 qq = 0
