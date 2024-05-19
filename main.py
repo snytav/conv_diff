@@ -5,6 +5,9 @@ class Element:
        self.M = np.zeros((ndof,ndof))
        self.C = np.zeros((ndof, ndof))
        self.K = np.zeros((ndof, ndof))
+       self.s = np.zeros(2)
+       self.f = np.zeros(2)
+
 
 
 
@@ -102,6 +105,12 @@ for n in range(n_el):
 # Element diffusion matrix
 for n in range(n_el):
     el[n].K=element_diffusion_matrix(v_arr[n],dof_el,n_gauss,dN,dW,w,J)
+
+# Element load vector
+for n in range(n_el):
+    el[n].s=s[n*(dof_el-1):n*(dof_el-1)+1]
+#    el(n).f=element_load_vector(el(n).s,dof_el,n_gauss,N,W,w,J);
+
 
 
 
