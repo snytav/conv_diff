@@ -106,10 +106,12 @@ for n in range(n_el):
 for n in range(n_el):
     el[n].K=element_diffusion_matrix(v_arr[n],dof_el,n_gauss,dN,dW,w,J)
 
+from matrix import element_load_vector
 # Element load vector
 for n in range(n_el):
     el[n].s=s[n*(dof_el-1):n*(dof_el-1)+1]
-#    el(n).f=element_load_vector(el(n).s,dof_el,n_gauss,N,W,w,J);
+    el[n].f=element_load_vector(el[n].s,dof_el,n_gauss,N,W,w,J)
+    qq = 0
 
 
 
