@@ -53,7 +53,7 @@ dof_el=polynomial_degree+1               # Number of DOFs per element
 dof=n_np                                 # Total number of DOFs
 L_el=L/n_el                              # Length of a finite element
 h=L_el/polynomial_degree                 # Spatial step
-x=np.arange(x_i,x_f,h)                   # Space vector
+x = np.linspace(x_i,x_f,n_el+1)          # Space vector
 dx_p=L/n_el                              # Spatial step-analytical solution
 x_p=np.arange(x_i,x_f,dx_p)              # Space vector-analytical solution
 dx_e=L_el/10                             # Spatial step-numerical interp.
@@ -109,7 +109,10 @@ for n in range(n_el):
 from matrix import element_load_vector
 # Element load vector
 for n in range(n_el):
-    el[n].s=s[n*(dof_el-1):n*(dof_el-1)+1]
+    mlab_n = n+1
+    mlab_first = (mlab_n - 1) * (dof_el - 1) + 1
+    mlab_last  =       mlab_n * (dof_el - 1) + 1
+    el[n].s=s[mlab_first-1:mlab_last-1]
     el[n].f=element_load_vector(el[n].s,dof_el,n_gauss,N,W,w,J)
     qq = 0
 

@@ -46,10 +46,15 @@ def element_diffusion_matrix(v,dof_el,n_gauss,dN,dW,w,J):
             K[i][j]=v*K[i][j]/J
     return K
 
-def element_load_vector(el,dof,n_el,dof_el,A):
-    # Assemblage of load vector
-    f=np.zeros((dof,1))
-    for n in range(n_el):
-        for i in range(dof_el):
-            f[A[n][i],0]=f[A[n][i],0]+el[n].f[i][0]
+def element_load_vector(s,dof_el,n_gauss,N,W,w,J):
+    # Elementload vector
+    f = np.zeros(dof_el)
+    for i in range(dof_el):
+        for j in range(dof_el):
+            for nn in range(n_gauss):
+                f[i] = f[i] + (W[i][nn] * W[j][nn] * s[j] )* w[nn]
+
+
+        f[i] = f[i] * J
     return f
+
