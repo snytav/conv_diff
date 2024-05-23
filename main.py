@@ -112,7 +112,7 @@ for n in range(n_el):
     mlab_n = n+1
     mlab_first = (mlab_n - 1) * (dof_el - 1) + 1
     mlab_last  =       mlab_n * (dof_el - 1) + 1
-    el[n].s=s[mlab_first-1:mlab_last-1]
+    el[n].s=s[mlab_first-1:mlab_last]
     el[n].f=element_load_vector(el[n].s,dof_el,n_gauss,N,W,w,J)
     qq = 0
 
