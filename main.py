@@ -7,6 +7,7 @@ class Element:
        self.K = np.zeros((ndof, ndof))
        self.s = np.zeros(2)
        self.f = np.zeros(2)
+       self.x = np.zeros(2)
 
 
 
@@ -56,8 +57,9 @@ h=L_el/polynomial_degree                 # Spatial step
 x = np.linspace(x_i,x_f,n_el+1)          # Space vector
 dx_p=L/n_el                              # Spatial step-analytical solution
 x_p=np.arange(x_i,x_f,dx_p)              # Space vector-analytical solution
+steps_per_el = 10                        # number of steps per element
 dx_e=L_el/10                             # Spatial step-numerical interp.
-x_e=np.arange(0,L_el,dx_e)               # Space vector-numerical interp.
+x_e=np.linspace(0,L_el,steps_per_el+1)   # Space vector-numerical interp.
 n_e=x_e.shape[0]                         # Number of points in space vector
 s=s_fun(x)*np.ones(x.shape[0])           # Numerical value of source term
 v=a*h/(2*Pe)                             # Diffusivity coefficient
@@ -115,6 +117,10 @@ for n in range(n_el):
     el[n].s=s[mlab_first-1:mlab_last]
     el[n].f=element_load_vector(el[n].s,dof_el,n_gauss,N,W,w,J)
     qq = 0
+
+# Element abscissae
+for n in range(n_el):
+    el[n].x=x_i+n*L_el+x_e
 
 
 
