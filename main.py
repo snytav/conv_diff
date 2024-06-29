@@ -128,6 +128,13 @@ for n in range(n_el):
 from mass_matrix import assemble_mass_matrix
 M=assemble_mass_matrix(el,dof,n_el,dof_el,A)
 
+# Assemblage of convection matrix
+from convection_matrix import assemble_convection_matrix
+C=assemble_convection_matrix(el,dof,n_el,dof_el,A)
+
+# Assemblage of diffusion matrix
+from diffusion_matrix import assemble_diffusion_matrix
+K = assemble_diffusion_matrix(el,dof,n_el,dof_el,A)
 
 
 
