@@ -122,6 +122,12 @@ for n in range(n_el):
 for n in range(n_el):
     el[n].x=x_i+n*L_el+x_e
 
+# Assemblate matrices and vectors
+
+# Assemblage of mass matrix
+from mass_matrix import assemble_mass_matrix
+M=assemble_mass_matrix(el,dof,n_el,dof_el,A)
+
 
 
 
