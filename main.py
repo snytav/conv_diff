@@ -136,7 +136,12 @@ C=assemble_convection_matrix(el,dof,n_el,dof_el,A)
 from diffusion_matrix import assemble_diffusion_matrix
 K = assemble_diffusion_matrix(el,dof,n_el,dof_el,A)
 
+# Convection+Diffusion+Reaction matrix
+D=C+K+sigma*M
 
+# Assemblage of load vector
+from load_vector import assemble_load_vector
+f=assemble_load_vector(el,dof,n_el,dof_el,A)
 
 qq = 0
 
