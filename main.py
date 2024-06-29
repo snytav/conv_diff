@@ -1,3 +1,21 @@
+# %% 1D Unsteady convection-diffusion-reaction problem
+# % Based on "Finite Element Methods for flow problems" of
+# % Jean Donea and Antonio Huerta
+#
+# % Andrea La Spina
+# % https://it.linkedin.com/in/andrealaspina
+# % https://independent.academia.edu/AndreaLaSpina
+# % https://www.researchgate.net/profile/Andrea_La_Spina
+#
+# %% Equation
+#
+# % u_t+a*u_x-v*u_xx+sigma*u=s(x)           in [x_i,x_f]x]t_i,t_f[
+# % u(x,0)=u0(x)                            on [x_i,x_f]
+# % u(x1,t)=u_1(t);                         on x1 for t in [t_i,t_f]
+# % u(x2,t)=u_2(t);                         on x2 for t in [t_i,t_f]
+
+
+
 import numpy as np
 
 class Element:
@@ -27,9 +45,11 @@ l=7*np.sqrt(2)/300.0                  # Width of Gauss hill
 def u_0_fun(x):
     t = u_max*np.exp(-((x-x_0)/l),2.0)
     return t                            # Initial condition
-
+from sympy import *
+t = symbols('t')
 def bound_cond_fun(t):
     return 0.0                          # Boundary condition
+#dof_constrained_string='[1,dof]';       # Degree of freedom constrained
 Pe=1                                    # Péclet number
 Courant=1                               # Courant number
 t_i=0                                   # Initial time
@@ -65,7 +85,7 @@ s=s_fun(x)*np.ones(x.shape[0])           # Numerical value of source term
 v=a*h/(2*Pe)                             # Diffusivity coefficient
 dt=h/a*Courant                           # Time step
 T=np.arange(t_i,t_f,dt)                  # Time vector
-
+dof_constrained = [0,dof-1]                # Degree of freedom constrained
 # Evaluation of beta
 v_arr = v*np.ones(n_el)
 a_arr = a*np.ones(n_el)
@@ -142,6 +162,31 @@ D=C+K+sigma*M
 # Assemblage of load vector
 from load_vector import assemble_load_vector
 f=assemble_load_vector(el,dof,n_el,dof_el,A)
+
+# Definition of the constrained DOFs
+dof_free=dof-len(dof_constrained)
+n_dof_constrained=len(dof_constrained)
+
+constrain_der_fun = []
+for n in range(n_dof_constrained):
+    g = diff(bound_cond_fun(t), t)
+    constrain_der_fun.append(g)
+
+
+# Evaluation of boundary conditions over time
+constrain = np.zeros_like(T)
+constrain_der = np.zeros_like(T)
+u_p = np.zeros((T.shape[0],T.shape[0]))
+u_der_p = np.zeros((T.shape[0],T.shape[0]))
+for k,t in enumerate(T):
+    for n in range(n_dof_constrained):
+        constrain[n]=bound_cond_fun(t)
+        constrain_der[n]=constrain_der_fun[k](t).evalf()
+
+    u_p[:,k]     = constrain.T
+    u_der_p[:,k] = constrain_der.T
+
+
 
 qq = 0
 
