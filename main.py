@@ -48,7 +48,7 @@ def u_0_fun(x):
 from sympy import *
 t = symbols('t')
 def bound_cond_fun(t):
-    return 0.0                          # Boundary condition
+    return 0.0*t                        # Boundary condition
 #dof_constrained_string='[1,dof]';       # Degree of freedom constrained
 Pe=1                                    # Péclet number
 Courant=1                               # Courant number
@@ -181,7 +181,7 @@ u_der_p = np.zeros((T.shape[0],T.shape[0]))
 for k,t in enumerate(T):
     for n in range(n_dof_constrained):
         constrain[n]=bound_cond_fun(t)
-        constrain_der[n]=constrain_der_fun[k](t).evalf()
+        constrain_der[n]=constrain_der_fun[k] #(t).evalf()
 
     u_p[:,k]     = constrain.T
     u_der_p[:,k] = constrain_der.T
