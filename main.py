@@ -181,12 +181,14 @@ u_der_p = np.zeros((T.shape[0],T.shape[0]))
 for k,t in enumerate(T):
     for n in range(n_dof_constrained):
         constrain[n]=bound_cond_fun(t)
-        constrain_der[n]=constrain_der_fun[k] #(t).evalf()
+        constrain_der[n]=constrain_der_fun[n] #(t).evalf()
 
     u_p[:,k]     = constrain.T
     u_der_p[:,k] = constrain_der.T
 
-
+# Mass matrix
+from constrain import constrain_matrix
+[M_ff,M_fp,M_pf,M_pp]=constrain_matrix(M,dof_constrained)
 
 qq = 0
 
