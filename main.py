@@ -201,7 +201,7 @@ from constrain import constrain_matrix
 
 u_0=u_0_fun(x).T
 from constrain import constrain_vector
-u_0_f = constrain_vector(u_0,dof_constrained)
+u_0_f,_ = constrain_vector(u_0,dof_constrained)
 
 
 qq = 0
