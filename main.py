@@ -203,6 +203,24 @@ u_0=u_0_fun(x).T
 from constrain import constrain_vector
 u_0_f,_ = constrain_vector(u_0,dof_constrained)
 
+# Unsteady convectio-diffusion-reaction solution
+
+u_f = np.zeros((T.shape[0],u_0_f.shape[0]))
+# Time integration
+u_f[0,:]=u_0_f
+for k,t in enumerate(T):
+    MM = (M_ff+dt*theta*D_ff)
+    MM_m = np.loadtxt('TimeMatrix_m.txt')
+    MM_m = MM_m.reshape(MM.shape)
+    d_MM = np.max(np.abs(MM-MM_m))
+    bb = ((M_ff-dt*(1-theta)*D_ff)*u_f[k,:].T
+        +dt*theta*(f_f-M_fp*u_der_p[:,k+1]-D_fp*u_p[:,k+1])
+        +dt*(1-theta)*(f_f-M_fp*u_der_p[:,k]-D_fp*u_p[:,k]))
+
+
+
+
+
 
 qq = 0
 
