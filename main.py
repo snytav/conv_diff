@@ -190,6 +190,16 @@ for k,t in enumerate(T):
 from constrain import constrain_matrix
 [M_ff,M_fp,M_pf,M_pp]=constrain_matrix(M,dof_constrained)
 
+# Convection matrix
+[C_ff,C_fp,C_pf,C_pp]=constrain_matrix(C,dof_constrained)
+
+# Diffusion matrix
+[K_ff,K_fp,K_pf,K_pp]=constrain_matrix(K,dof_constrained)
+
+# Convection+Diffusion matrix
+[D_ff,D_fp,D_pf,D_pp]=constrain_matrix(D,dof_constrained)
+
+
 qq = 0
 
 
