@@ -15,15 +15,19 @@ def constrain_matrix(A,dof_constrained):
 
     A_ff_m = np.loadtxt('A_ff_cons_m.txt')
     A_ff_m = A_ff_m.reshape(f.shape[0], f.shape[0])
-    from matrix_elements import matrix_elements_by_list
-    A_ff = matrix_elements_by_list(A,f,f)
-    # row, col = np.indices((f.shape[0], f.shape[0])) # indices for rows and columns
-    # c = np.indices(f.shape)    # indices of all columns in row array
-    # row[:, c] = f              # assigning f to all the columns of 'row'
-    # col = row.T                # we want all the columns and rows with indices from 'f'
-    # A_ff = A[row, col]         # getting all the specified elements from 'A'
+    from numpy import ix_
+    A_ff = A[ix_(f,f)]
     d = np.max(np.abs(A_ff-A_ff_m))
     #A_ff = np.diag(A[f,f])
-    A_fp = A[f,p]
-    A_pf = A[p,f]
-    A_pp = A[p,p]
+
+    A_fp_m = np.loadtxt('A_fp_cons_m.txt')
+    p = np.array(p)
+    A_fp = A[ix_(f, p)]
+    d_fp = np.max(np.abs(A_fp - A_fp_m))
+    A_pf = A[ix_(p,f)]
+    A_pf_m = np.loadtxt('A_pf_cons_m.txt')
+    d_pf = np.max(np.abs(A_pf - A_pf_m))
+    A_pp = A[ix_(p,p)]
+    A_pp_m = np.loadtxt('A_pp_cons_m.txt')
+    d_pp = np.max(np.abs(A_pp - A_pp_m))
+    qq = 0
