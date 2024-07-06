@@ -37,3 +37,20 @@ def constrain_matrix(A,dof_constrained):
     qq = 0
 
     return A_ff,A_fp,A_pf,A_pp
+
+
+def constrain_vector(v,dof_constrained):
+
+    # Constrain a vector
+    N=v.shape[0]
+    p=dof_constrained
+    f_aus=np.arange(0,N)
+    p_aus=np.zeros(N)
+    p_aus[p] = p
+    f=f_aus-p_aus
+    f=np.where(f != 0)
+
+    v_f = v[f]
+    v_p = v[p]
+
+    return v_f,v_p

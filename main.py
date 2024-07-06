@@ -43,7 +43,7 @@ x_0=2.0/15.0                          # Centre of Gauss hill
 l=7*np.sqrt(2)/300.0                  # Width of Gauss hill
 
 def u_0_fun(x):
-    t = u_max*np.exp(-((x-x_0)/l),2.0)
+    t = u_max*np.exp(-np.power((x-x_0)/l,2.0))
     return t                            # Initial condition
 from sympy import *
 t = symbols('t')
@@ -198,6 +198,10 @@ from constrain import constrain_matrix
 
 # Convection+Diffusion matrix
 [D_ff,D_fp,D_pf,D_pp]=constrain_matrix(D,dof_constrained)
+
+u_0=u_0_fun(x).T
+from constrain import constrain_vector
+u_0_f = constrain_vector(u_0,dof_constrained)
 
 
 qq = 0
