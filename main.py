@@ -174,17 +174,23 @@ for n in range(n_dof_constrained):
 
 
 # Evaluation of boundary conditions over time
-constrain = np.zeros_like(T)
-constrain_der = np.zeros_like(T)
-u_p = np.zeros((T.shape[0],T.shape[0]))
-u_der_p = np.zeros((T.shape[0],T.shape[0]))
-for k,t in enumerate(T):
-    for n in range(n_dof_constrained):
-        constrain[n]=bound_cond_fun(t)
-        constrain_der[n]=constrain_der_fun[n] #(t).evalf()
+u_p        = np.zeros((n_dof_constrained,T.shape[0]))
+u_der_p    = np.zeros((n_dof_constrained,T.shape[0]))
 
-    u_p[:,k]     = constrain.T
-    u_der_p[:,k] = constrain_der.T
+constrain     = np.zeros(n_dof_constrained)
+constrain_der = np.zeros(n_dof_constrained)
+t = symbols('t')
+
+for k,ti in enumerate(T):
+    for n in range(n_dof_constrained):
+        constrain[n] = bound_cond_fun(ti)
+        constrain_der[n] =  diff(bound_cond_fun(t), t)
+    u_p[:, k] = constrain.T
+    u_der_p[:, k] = constrain_der.T
+
+
+
+u_p = np.array(u_p)
 
 # Mass matrix
 from constrain import constrain_matrix
@@ -198,13 +204,16 @@ from constrain import constrain_matrix
 
 # Convection+Diffusion matrix
 [D_ff,D_fp,D_pf,D_pp]=constrain_matrix(D,dof_constrained)
+# Load vector
+from constrain import constrain_vector
+[f_f,f_p]=constrain_vector(f,dof_constrained);
+
 
 u_0=u_0_fun(x).T
 from constrain import constrain_vector
 u_0_f,_ = constrain_vector(u_0,dof_constrained)
 
 # Unsteady convectio-diffusion-reaction solution
-
 u_f = np.zeros((T.shape[0],u_0_f.shape[0]))
 # Time integration
 u_f[0,:]=u_0_f
@@ -213,9 +222,37 @@ for k,t in enumerate(T):
     MM_m = np.loadtxt('TimeMatrix_m.txt')
     MM_m = MM_m.reshape(MM.shape)
     d_MM = np.max(np.abs(MM-MM_m))
-    bb = ((M_ff-dt*(1-theta)*D_ff)*u_f[k,:].T
-        +dt*theta*(f_f-M_fp*u_der_p[:,k+1]-D_fp*u_p[:,k+1])
-        +dt*(1-theta)*(f_f-M_fp*u_der_p[:,k]-D_fp*u_p[:,k]))
+    u_p_m = np.loadtxt('u_p' +'_'+ str(k+1) + '.txt')
+    d_u_p = np.max(np.abs(u_p[:,k+1]-u_p_m))
+    D_fp_m = np.loadtxt('D_fp' +'_'+  str(k+1) + '.txt')
+    d_D_fp = np.max(np.abs(D_fp - D_fp_m.reshape(D_fp.shape)))
+    u_der_p_m = np.loadtxt('u_der_p' +'_'+  str(k+1) + '.txt')
+    d_u_der_p = np.max(np.abs(u_der_p_m - u_der_p[:,k+1]))
+    M_fp_m = np.loadtxt('M_fp' + '_'+ str(k+1) + '.txt')
+    d_M_fp = np.max(np.abs(M_fp_m.reshape(M_fp.shape) - M_fp))
+    # M_fp_m = np.loadtxt('M_fp' +'_'+  str(k+1) + '.txt')
+    # d_M_fp = np.max(np.abs(M_fp_m - M_fp))
+    # M_fp_m = np.loadtxt('M_fp' +'_'+  str(k+1) + '.txt')
+    # d_M_fp = np.max(np.abs(M_fp_m - M_fp))
+    f_f_m = np.loadtxt('f_f_' + str(k+1) +  '.txt')
+    d_f_f = np.max(np.abs(f_f_m - f_f))
+
+    # the operation M_fp*u_der_p[:,k+1] probably needs matrix multiplication
+    A = M_fp
+    b = u_der_p[:,k+1]
+    x = np.matmul(A,b)
+    br = f_f - x
+    upk = u_p[:,k+1].reshape(u_p[:,k+1].shape[0],1)
+    res =  np.matmul(D_fp,upk)
+    br -= res.reshape(res.shape[0]) #*u_p[:,k+1]
+    # matlab dimensionality is (149,2) X( 2,1) resulting in 149,1
+    bb = (M_ff-dt*(1-theta)*D_ff)*u_f[k,:].T
+    bb += dt*theta*(f_f-M_fp*u_der_p[:,k+1]-D_fp*u_p[:,k+1])
+    bb += dt*(1-theta)*(f_f-M_fp*u_der_p[:,k]-D_fp*u_p[:,k])
+
+    bb_m = np.loadtxt('time_vector_'+str(k)+'.txt')
+    d_bb = np.max(np.abs(bb-bb_m))
+    qq = 0
 
 
 
