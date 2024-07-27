@@ -248,7 +248,8 @@ for k,t in enumerate(T):
     # matlab dimensionality is (149,2) X( 2,1) resulting in 149,1
     bb = (M_ff-dt*(1-theta)*D_ff)*u_f[k,:].T
     bb += dt*theta*(f_f-np.matmul(M_fp,u_der_p[:,k+1].reshape(u_der_p[:,k+1].shape[0],1))-np.matmul(D_fp,u_p[:,k+1].reshape(u_p[:,k+1].shape[0],1)))
-    bb += dt*(1-theta)*(f_f-M_fp*u_der_p[:,k]-D_fp*u_p[:,k])
+    bb += dt*(1-theta)*(f_f-np.matmul(M_fp,u_der_p[:,k].reshape(u_der_p[:,k].shape[0],1))
+                        -np.matmul(D_fp,u_p[:,k].reshape(u_p[:,k].shape[0],1)))
 
     bb_m = np.loadtxt('time_vector_'+str(k)+'.txt')
     d_bb = np.max(np.abs(bb-bb_m))
