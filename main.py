@@ -251,8 +251,9 @@ for k,t in enumerate(T):
     bb += dt*(1-theta)*(f_f-np.matmul(M_fp,u_der_p[:,k].reshape(u_der_p[:,k].shape[0],1))
                         -np.matmul(D_fp,u_p[:,k].reshape(u_p[:,k].shape[0],1)))
 
-    bb_m = np.loadtxt('time_vector_'+str(k)+'.txt')
+    bb_m = np.loadtxt('time_vector_'+str(k+1)+'.txt')
     d_bb = np.max(np.abs(bb-bb_m))
+    u_f[k + 1,:] = bb
     qq = 0
 
 
