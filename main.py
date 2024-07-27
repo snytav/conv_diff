@@ -249,14 +249,16 @@ for k,t in enumerate(T):
     bb = np.matmul((M_ff-dt*(1-theta)*D_ff),u_f[k,:])
     bb_m = np.loadtxt('bb_' + str(k + 1) + '.txt')
     d_bb = np.max(np.abs(bb-bb_m))
-    bb1 = dt*theta*(f_f-np.matmul(M_fp,u_der_p[:,k+1].reshape(u_der_p[:,k+1].shape[0],1))-np.matmul(D_fp,u_p[:,k+1].reshape(u_p[:,k+1].shape[0],1)))
+    bb_1 = np.matmul(M_fp,u_der_p[:,k+1].reshape(u_der_p[:,k+1].shape[0],1))
+    bb_2 = np.matmul(D_fp,u_p[:,k+1].reshape(u_p[:,k+1].shape[0],1))
+    bb1 = dt*theta*(f_f- bb_1.reshape(bb_1.shape[0],) - bb_2.reshape(bb_2.shape[0],))
 
     bb1_m = np.loadtxt('bb1_' + str(k + 1) + '.txt')
     d_bb1  = np.max(np.abs(bb1 - bb1_m))
 
     bb += bb1
-    bb += dt*(1-theta)*(f_f-np.matmul(M_fp,u_der_p[:,k].reshape(u_der_p[:,k].shape[0],1))
-                        -np.matmul(D_fp,u_p[:,k].reshape(u_p[:,k].shape[0],1)))
+    # bb += dt*(1-theta)*(f_f-np.matmul(M_fp,u_der_p[:,k].reshape(u_der_p[:,k].shape[0],1))
+    #                     -np.matmul(D_fp,u_p[:,k].reshape(u_p[:,k].shape[0],1)))
 
     bb_m = np.loadtxt('time_vector_'+str(k+1)+'.txt')
     d_bb = np.max(np.abs(bb-bb_m))
