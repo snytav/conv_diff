@@ -263,8 +263,9 @@ for k,t in enumerate(T):
     bb_2_m = np.loadtxt('bb_u_f_2_' + str(k + 1) + '.txt')
     d_bb2 = np.max(np.abs(bb_2 - bb_2_m))
 
-
-    bb += bb1
+    bb_final_m = np.loadtxt('bb_final_' + str(k + 1) + '.txt')
+    bb += bb_1.reshape(bb_1.shape[0])+bb_2.reshape(bb_2.shape[0])
+    d_bb = np.max(np.abs(bb - bb_final_m))
     # bb += dt*(1-theta)*(f_f-np.matmul(M_fp,u_der_p[:,k].reshape(u_der_p[:,k].shape[0],1))
     #                     -np.matmul(D_fp,u_p[:,k].reshape(u_p[:,k].shape[0],1)))
 
