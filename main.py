@@ -248,8 +248,10 @@ for k,t in enumerate(T):
     # matlab dimensionality is (149,2) X( 2,1) resulting in 149,1
     bb = np.matmul((M_ff-dt*(1-theta)*D_ff),u_f[k,:])
     bb_m = np.loadtxt('bb_' + str(k + 1) + '.txt')
+    uf_init_m = np.loadtxt('uf_init_m_' + str(k + 1) + '.txt')  # uf_init_m_
+    d_uf_init = np.max(np.abs(u_f[k,:] - uf_init_m))
     # d_bb too big at k == 2
-    d_bb = np.max(np.abs(bb-bb_m))
+    d_bb_init = np.max(np.abs(bb-bb_m))
     # Matlab     dt*theta*(f_f-M_fp*u_der_p(:,k+1)-D_fp*u_p(:,k+1))
     bb_1 =  dt*theta*(np.matmul(M_fp,u_der_p[:,k+1].reshape(u_der_p[:,k+1].shape[0],1))
             +np.matmul(D_fp,u_p[:,k+1].reshape(u_p[:,k+1].shape[0],1)))
