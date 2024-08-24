@@ -270,8 +270,8 @@ for k,t in enumerate(T):
     d_bb_final = np.max(np.abs(bb - bb_final_m))
 
 
-    bb += dt*(1-theta)*(f_f-np.matmul(M_fp,u_der_p[:,k].reshape(u_der_p[:,k].shape[0],1))
-                        -np.matmul(D_fp,u_p[:,k].reshape(u_p[:,k].shape[0],1)))
+    # bb += dt*(1-theta)*(f_f-np.matmul(M_fp,u_der_p[:,k].reshape(u_der_p[:,k].shape[0],1))
+    #                     -np.matmul(D_fp,u_p[:,k].reshape(u_p[:,k].shape[0],1)))
 
 
 
@@ -286,10 +286,10 @@ for k,t in enumerate(T):
     #bb += bb2
 
 
-    tv = np.linalg.solve(MM,bb)
+    tv = np.linalg.solve(M_ff+dt*theta*D_ff,bb)
     tv_m = np.loadtxt('time_vector_'+str(k+1)+'.txt')
-    d_bb = np.max(np.abs(tv-tv_m))
-    u_f[k + 1,:] = bb
+    d_tv = np.max(np.abs(tv-tv_m))
+    u_f[k + 1,:] = tv
     qq = 0
 
 
