@@ -248,6 +248,7 @@ for k,t in enumerate(T):
     # matlab dimensionality is (149,2) X( 2,1) resulting in 149,1
     bb = np.matmul((M_ff-dt*(1-theta)*D_ff),u_f[k,:])
     bb_m = np.loadtxt('bb_' + str(k + 1) + '.txt')
+    # d_bb too big at k == 2
     d_bb = np.max(np.abs(bb-bb_m))
     # Matlab     dt*theta*(f_f-M_fp*u_der_p(:,k+1)-D_fp*u_p(:,k+1))
     bb_1 =  dt*theta*(np.matmul(M_fp,u_der_p[:,k+1].reshape(u_der_p[:,k+1].shape[0],1))
@@ -264,10 +265,13 @@ for k,t in enumerate(T):
     d_bb2 = np.max(np.abs(bb_2 - bb_2_m))
 
     bb_final_m = np.loadtxt('bb_final_' + str(k + 1) + '.txt')
+    #d_bb_final = np.max(np.abs(bb_final_m))
     bb += bb_1.reshape(bb_1.shape[0])+bb_2.reshape(bb_2.shape[0])
-    d_bb = np.max(np.abs(bb - bb_final_m))
-    # bb += dt*(1-theta)*(f_f-np.matmul(M_fp,u_der_p[:,k].reshape(u_der_p[:,k].shape[0],1))
-    #                     -np.matmul(D_fp,u_p[:,k].reshape(u_p[:,k].shape[0],1)))
+    d_bb_final = np.max(np.abs(bb - bb_final_m))
+
+
+    bb += dt*(1-theta)*(f_f-np.matmul(M_fp,u_der_p[:,k].reshape(u_der_p[:,k].shape[0],1))
+                        -np.matmul(D_fp,u_p[:,k].reshape(u_p[:,k].shape[0],1)))
 
 
 
