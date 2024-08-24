@@ -174,8 +174,8 @@ for n in range(n_dof_constrained):
 
 
 # Evaluation of boundary conditions over time
-u_p        = np.zeros((n_dof_constrained,T.shape[0]))
-u_der_p    = np.zeros((n_dof_constrained,T.shape[0]))
+u_p        = np.zeros((n_dof_constrained,T.shape[0]+1))
+u_der_p    = np.zeros((n_dof_constrained,T.shape[0]+1))
 
 constrain     = np.zeros(n_dof_constrained)
 constrain_der = np.zeros(n_dof_constrained)
@@ -214,7 +214,7 @@ from constrain import constrain_vector
 u_0_f,_ = constrain_vector(u_0,dof_constrained)
 
 # Unsteady convectio-diffusion-reaction solution
-u_f = np.zeros((T.shape[0],u_0_f.shape[0]))
+u_f = np.zeros((T.shape[0]+1,u_0_f.shape[0]))
 # Time integration
 u_f[0,:]=u_0_f
 for k,t in enumerate(T):
@@ -291,6 +291,7 @@ for k,t in enumerate(T):
     tv = np.linalg.solve(M_ff+dt*theta*D_ff,bb)
     tv_m = np.loadtxt('time_vector_'+str(k+1)+'.txt')
     d_tv = np.max(np.abs(tv-tv_m))
+    print(k,d_tv)
     u_f[k + 1,:] = tv
     qq = 0
 
