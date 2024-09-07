@@ -1,3 +1,5 @@
+# TODO: matrix A in line 317 is wrong: both size and values at A[0,:] cf A(1,:)
+
 # %% 1D Unsteady convection-diffusion-reaction problem
 # % Based on "Finite Element Methods for flow problems" of
 # % Jean Donea and Antonio Huerta
@@ -308,6 +310,15 @@ for k in range(T.shape[0]):
     time[k].u=data_all_dof(u_f[k,:].T,u_p[:,k],dof_constrained)
     time_k_u_m = np.loadtxt('time_k_u_'+str(k+1)+'.txt')
     dt_k[k] = np.max(np.abs(time_k_u_m-time[k].u))
+
+# Interpolation of the solution
+from interp import interpolation
+interp_k = np.zeros(n_el)
+for n in range(n_el):
+    for k in range(T.shape[0]):
+        el[n].time[k].u=interpolation(n,time[k].u,A,n_e)
+        time_k_u_m = np.loadtxt('interp_k_' + str(k + 1) + '.txt')
+        interp_k[k] = np.max(np.abs(time_k_u_m - time[k].u))
 
 
 
