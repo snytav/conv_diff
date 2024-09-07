@@ -18,6 +18,11 @@
 
 import numpy as np
 
+class TimeMoment:
+    def __init__(self,ndof):
+        self.u = np.zeros(ndof)
+
+
 class Element:
     def __init__(self,ndof):
        self.M = np.zeros((ndof,ndof))
@@ -114,6 +119,7 @@ from afference import afference_matrix
 A=afference_matrix(n_el,dof_el)
 
 el = [Element(dof_el) for n in range(n_el)]
+time = [TimeMoment(dof) for n in range(T.shape[0])]
 
 # Element mass matrix
 from matrix import element_mass_matrix,element_convection_matrix,element_diffusion_matrix
@@ -295,8 +301,13 @@ for k,t in enumerate(T):
     u_f[k + 1,:] = tv
     qq = 0
 
-
-
+from data_all import data_all_dof
+# Data for all dof
+dt_k = np.zeros(T.shape[0])
+for k in range(T.shape[0]):
+    time[k].u=data_all_dof(u_f[k,:].T,u_p[:,k],dof_constrained)
+    time_k_u_m = np.loadtxt('time_k_u_'+str(k+1)+'.txt')
+    dt_k[k] = np.max(np.abs(time_k_u_m-time[k].u))
 
 
 
