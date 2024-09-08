@@ -8,8 +8,8 @@ def interpolation(n,u,A,n_e):
     csi=np.linspace(-1,+1,n_e)
     for i in range(n_e):
         Ni=f_N(csi[i])
-        un=u[A[n,:]]
-        u_e[i]=Ni*un
+        un=u[A[n,:].astype(int)]
+        u_e[i]=np.inner(Ni,un)
     return u_e
 
 
