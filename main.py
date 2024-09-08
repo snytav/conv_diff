@@ -119,6 +119,11 @@ W,dW=test_functions_Gauss_points(xi,beta)
 # Afference matrix
 from afference import afference_matrix
 A=afference_matrix(n_el,dof_el)
+aff_m = np.loadtxt('afference.txt')
+q = A - aff_m +np.ones_like(A)
+d_A_m = np.max(q)
+# d_A_m = np.max(np.abs(aff_m - A + np.ones_like(A))) # - A.reshape(A.shape[0]*A.shape[1])))
+
 
 el = [Element(dof_el) for n in range(n_el)]
 time = [TimeMoment(dof) for n in range(T.shape[0])]
@@ -312,7 +317,11 @@ for k in range(T.shape[0]):
     dt_k[k] = np.max(np.abs(time_k_u_m-time[k].u))
 
 # Interpolation of the solution
+A=afference_matrix(n_el,dof_el)
 from interp import interpolation
+A_m = np.loadtxt('A_interp.txt')
+q = A - A_m +np.ones_like(A)
+d_A_m = np.max(q)
 interp_k = np.zeros(n_el)
 for n in range(n_el):
     for k in range(T.shape[0]):
