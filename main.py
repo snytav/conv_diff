@@ -26,14 +26,16 @@ class TimeMoment:
 
 
 class Element:
-    def __init__(self,ndof):
+    def __init__(self,ndof,nt):
        self.M    = np.zeros((ndof,ndof))
        self.C    = np.zeros((ndof, ndof))
        self.K    = np.zeros((ndof, ndof))
        self.s    = np.zeros(2)
        self.f    = np.zeros(2)
        self.x    = np.zeros(2)
-       self.time = TimeMoment(ndof)
+       self.time = []
+       for i in range(nt):
+           self.time.append(TimeMoment(ndof))
 
 
 
@@ -126,7 +128,7 @@ d_A_m = np.max(q)
 # d_A_m = np.max(np.abs(aff_m - A + np.ones_like(A))) # - A.reshape(A.shape[0]*A.shape[1])))
 
 
-el = [Element(dof_el) for n in range(n_el)]
+el = [Element(dof_el,T.shape[0]) for n in range(n_el)]
 time = [TimeMoment(dof) for n in range(T.shape[0])]
 
 # Element mass matrix
