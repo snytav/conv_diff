@@ -332,7 +332,13 @@ for n in range(n_el):
         time_k_u_m = np.loadtxt('interp_n_' +str(n+1)+ '_k_' + str(k + 1) + '.txt')
         interp_nk[n][k] = np.max(np.abs(time_k_u_m - el[n].time[k].u))
 
+# Analytical solution
+u_anal = np.zeros((n_el,T.shape[0]))
 
+for k in range(T.shape[0]):
+    t=T[k]
+    alfa=np.sqrt(1+4*v*t/l**2)
+    u_anal[:,k]=u_max/alfa*np.exp(-np.power(((x_p-x_0-a*t)/(l*alfa)),2))
 
 qq = 0
 
