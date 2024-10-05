@@ -15,9 +15,7 @@
 # % u(x,0)=u0(x)                            on [x_i,x_f]
 # % u(x1,t)=u_1(t);                         on x1 for t in [t_i,t_f]
 # % u(x2,t)=u_2(t);                         on x2 for t in [t_i,t_f]
-
-
-
+import matplotlib.pyplot as plt
 import numpy as np
 
 class TimeMoment:
@@ -349,8 +347,19 @@ d_u_anal = np.max(d_u_anal_m)
 
 qq = 0
 
+# %% Plot of solutions
 
+plt.figure()
+# axes('FontSize',14)
+plt.plot(x_p,u_anal[:,0],label='Initial condition',color='green')
+plt.plot(x_p,u_anal[:,-1],label='Analytical solution',color='red')
+plt.plot(el[n].x, el[n].time[-1].u,'o', label='Numerical solution', color='blue')
+plt.title('Analytical and numerical solution')
+plt.legend()
+plt.xlim(x_i,x_f)
+plt.show(block=True)
 
+plt.show()
 
 
 
