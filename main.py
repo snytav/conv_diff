@@ -319,7 +319,7 @@ for k in range(T.shape[0]):
     time_k_u_m = np.loadtxt('time_k_u_'+str(k+1)+'.txt')
     dt_k[k] = np.max(np.abs(time_k_u_m-time[k].u))
 
-# Interpolation of the solution
+# Interpolation of the solution OK
 A=afference_matrix(n_el,dof_el)
 from interp import interpolation
 A_m = np.loadtxt('A_interp.txt')
