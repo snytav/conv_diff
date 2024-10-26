@@ -1,4 +1,5 @@
 # to Sat morning:
 # 4. organize as function
+  4.5  make switches for check
 # 5. if possible check with some external example (e.g. Lorena Barba's)
 # 6. solve Lavrentiev's problem.

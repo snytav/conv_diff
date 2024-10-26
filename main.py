@@ -86,7 +86,7 @@ dof_constrained = [0,dof-1]                # Degree of freedom constrained
 
 if __name__ == '__main__':
     from conv_diff import unsteady_convection_diffusion_reaction
-    unsteady_convection_diffusion_reaction(
+    xt,yt,d_yt = unsteady_convection_diffusion_reaction(
         n_gauss,
         L_el,
         n_el,
