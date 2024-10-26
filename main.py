@@ -348,12 +348,26 @@ d_u_anal = np.max(d_u_anal_m)
 qq = 0
 
 # %% Plot of solutions
-
+# to Sat morning:
+# 1. find analogue of plot(x_p,u_anal(:,end),'b:','LineWidth',2)
+# 2. check values
+# 3. reproduce plot
+# 4. organize as function
+# 5. if possible check with some external example (e.g. Lorena Barba's)
+# 6. solve Lavrentiev's problem.
 plt.figure()
 # axes('FontSize',14)
 plt.plot(x_p,u_anal[:,0],label='Initial condition',color='green')
+
+
+
+xt = np.zeros(n_el)
+yt = np.zeros(n_el)
+for n in range(n_el):
+    xt[n] = el[n].x[0]
+    yt[n] = el[n].time[-1].u[0]
+plt.plot(xt,yt,'o', label='Numerical solution', color='blue')
 plt.plot(x_p,u_anal[:,-1],label='Analytical solution',color='red')
-plt.plot(el[n].x, el[n].time[-1].u,'o', label='Numerical solution', color='blue')
 plt.title('Analytical and numerical solution')
 plt.legend()
 plt.xlim(x_i,x_f)
