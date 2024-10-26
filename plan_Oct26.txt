@@ -1,0 +1,4 @@
+# to Sat morning:
+# 4. organize as function
+# 5. if possible check with some external example (e.g. Lorena Barba's)
+# 6. solve Lavrentiev's problem.
