@@ -36,35 +36,15 @@ x
     # d_A_m = np.max(np.abs(aff_m - A + np.ones_like(A))) # - A.reshape(A.shape[0]*A.shape[1])))
 
     from time_integr import time_integration
-    uf = time_integration(dof_el,n_el,dof,n_gauss, N, W, w, J,a_arr,dN,v_arr,dW,x_i,L_el,x_e,A,sigma,
+    u_f,u_p,d_tv = time_integration(dof_el,n_el,dof,n_gauss, N, W, w, J,a_arr,dN,v_arr,dW,x_i,L_el,x_e,A,sigma,
                      dof_constrained,bound_cond_fun,T,u_0_fun,x,dt,theta,s)
 
+    from interpolation_module import interpolation
+    interpolation(T, time, u_f, u_p, dof_constrained, n_el, dof_el, n_e, el)
 
 
 
-    from data_all import data_all_dof
-    # Data for all dof
-    dt_k = np.zeros(T.shape[0])
-    for k in range(T.shape[0]):
-        time[k].u=data_all_dof(u_f[k,:].T,u_p[:,k],dof_constrained)
-        time_k_u_m = np.loadtxt('time_k_u_'+str(k+1)+'.txt')
-        dt_k[k] = np.max(np.abs(time_k_u_m-time[k].u))
 
-    # Interpolation of the solution OK
-    A=afference_matrix(n_el,dof_el)
-    from interp import interpolation
-    A_m = np.loadtxt('A_interp.txt')
-    q = A - A_m +np.ones_like(A)
-    d_A_m = np.max(q)
-    interp_nk = np.zeros((n_el,T.shape[0]))
-    for n in range(n_el):
-        for k in range(T.shape[0]):
-            el[n].time[k].u=interpolation(n,time[k].u,A,n_e)
-            time_k_u_m = np.loadtxt('interp_n_' +str(n+1)+ '_k_' + str(k + 1) + '.txt')
-            interp_nk[n][k] = np.max(np.abs(time_k_u_m - el[n].time[k].u))
-
-
-    d_interp_nk = np.max(interp_nk)
     # Analytical solution
     u_anal = np.zeros((n_el,T.shape[0]))
 

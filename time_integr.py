@@ -191,4 +191,4 @@ def time_integration(dof_el,n_el,dof,n_gauss, N, W, w, J,a_arr,dN,v_arr,dW,x_i,L
         print(k, d_tv)
         u_f[k + 1, :] = tv
 
-    return u_f
+    return u_f,u_p,d_tv
