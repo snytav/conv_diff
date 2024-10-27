@@ -24,4 +24,4 @@ def interpolation(T,time,u_f,u_p,dof_constrained,n_el,dof_el,n_e,el):
             interp_nk[n][k] = np.max(np.abs(time_k_u_m - el[n].time[k].u))
 
     d_interp_nk = np.max(interp_nk)
-    return d_interp_nk
+    return d_interp_nk,el
