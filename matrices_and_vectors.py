@@ -33,4 +33,4 @@ def get_matrices_and_vectors(v,a,n_el,n_gauss,L_el,h,dof_el):
     q = A - aff_m +np.ones_like(A)
     d_A_m = np.max(q)
 
-    return beta,v_arr,a_arr,t,N,dN,W,dW,A,J,d_A_m
+    return beta,v_arr,a_arr,t,N,dN,W,dW,A,J,w,d_A_m
