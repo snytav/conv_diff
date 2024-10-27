@@ -36,11 +36,11 @@ x
     # d_A_m = np.max(np.abs(aff_m - A + np.ones_like(A))) # - A.reshape(A.shape[0]*A.shape[1])))
 
     from time_integr import time_integration
-    u_f,u_p,d_tv = time_integration(dof_el,n_el,dof,n_gauss, N, W, w, J,a_arr,dN,v_arr,dW,x_i,L_el,x_e,A,sigma,
+    el,time,u_f,u_p,d_tv = time_integration(dof_el,n_el,dof,n_gauss, N, W, w, J,a_arr,dN,v_arr,dW,x_i,L_el,x_e,A,sigma,
                      dof_constrained,bound_cond_fun,T,u_0_fun,x,dt,theta,s)
 
     from interpolation_module import interpolation
-    interpolation(T, time, u_f, u_p, dof_constrained, n_el, dof_el, n_e, el)
+    d_interp_nk = interpolation(T, time, u_f, u_p, dof_constrained, n_el, dof_el, n_e, el)
 
 
 
