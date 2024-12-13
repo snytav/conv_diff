@@ -29,4 +29,4 @@ def constrain_matrix(A,dof_constrained):
 
     A_pf = A[ ix_( p, f ) ]
     A_pp = A[ ix_( p, p ) ]
-    qq = 0
+    return A_ff,A_fp,A_pf,A_pp
