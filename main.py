@@ -188,7 +188,20 @@ for k,t in enumerate(T):
 
 # Mass matrix
 from constrain import constrain_matrix
-[M_ff,M_fp,M_pf,M_pp]=constrain_matrix(M,dof_constrained)
+M_ff,M_fp,M_pf,M_pp=constrain_matrix(M,dof_constrained)
+
+# Diffusion matrix
+K_ff, K_fp, K_pf, K_pp = constrain_matrix(K, dof_constrained)
+
+# Convection+Diffusion matrix
+D_ff, D_fp, D_pf, D_pp = constrain_matrix(D, dof_constrained)
+
+# Load vector
+from constrain import constrain_vector
+f_f, f_p = constrain_vector(f, dof_constrained)
+
+
+
 
 qq = 0
 

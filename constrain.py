@@ -30,3 +30,23 @@ def constrain_matrix(A,dof_constrained):
     A_pf = A[ ix_( p, f ) ]
     A_pp = A[ ix_( p, p ) ]
     return A_ff,A_fp,A_pf,A_pp
+
+
+import numpy as np
+
+
+def constrain_vector(v, dof_constrained):
+    from numpy import ix_
+    # Constrain a vector
+    N = len(v)
+    p = dof_constrained
+    f_aus = np.arange(0, N)
+    p_aus = np.zeros(N, dtype=int)
+    p_aus[ix_(p)] = p
+    f = f_aus - p_aus
+    f = np.nonzero(f)[0]
+
+    v_f = v[ix_(f)]
+    v_p = v[ix_(p)]
+
+    return v_f, v_p
