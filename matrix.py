@@ -25,7 +25,7 @@ def element_convection_matrix(a,dof_el,n_gauss,dN,W,w,J):
                 C[i][j]=C[i][j]+(W[i,nn]*dN[j,nn])*w[nn]
           #  C[i][j]=a*C[i][j]
     #C.requires_grad = True
-    C = a*C
+    C = a*torch.from_numpy(C)
     return C
 
 def assemble_diffusion_matrix(el,dof,n_el,dof_el,A):
@@ -48,7 +48,7 @@ def element_diffusion_matrix(v,dof_el,n_gauss,dN,dW,w,J):
             for nn in range(n_gauss):
                 K[i][j]=K[i][j]+dW[i][nn]*dN[j,nn]*w[nn]
             #K[i][j]=v*K[i][j]/J
-    K = v*K/J
+    K = v*torch.from_numpy(K/J)
     return K
 
 def element_load_vector(s,dof_el,n_gauss,N,W,w,J):
