@@ -69,7 +69,7 @@ from convection_diffusion import convection_diffusion
 
 x = np.linspace(x_i,x_f,n_el+1)          # Space vector
 u_0 = u_0_fun(x)
-xt,yt = convection_diffusion(x_i,x_f,x_0,u_max,l,a,u_0,bound_cond_fun,t_i,t_f,n_el,n_gauss,polynomial_degree)
+xt,yt = convection_diffusion(x_i,x_f,x_0,u_max,l,a,u_0,[0,0],t_i,t_f,n_el,n_gauss,polynomial_degree)
 
 # # # Derived parameters
 

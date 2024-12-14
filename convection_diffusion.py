@@ -66,7 +66,7 @@ class Element:
 #                                         # (2/3 = Galerkin)
 #                                         # ( 1  = Backward Euler)
 
-def convection_diffusion(x_i,x_f,x_0,l,u_max,a,u_0,bound_cond_fun,t_i,t_f,n_el,n_gauss,polynomial_degree):
+def convection_diffusion(x_i,x_f,x_0,l,u_max,a,u_0,bc,t_i,t_f,n_el,n_gauss,polynomial_degree):
 
     # # # Derived parameters
     def s_fun(x):
@@ -175,10 +175,10 @@ def convection_diffusion(x_i,x_f,x_0,l,u_max,a,u_0,bound_cond_fun,t_i,t_f,n_el,n
     n_dof_constrained=len(dof_constrained)
 
     t = symbols('t')
-    constrain_der_fun = []
-    for n in range(n_dof_constrained):
-        g = diff(bound_cond_fun(t), t)
-        constrain_der_fun.append(g)
+    constrain_der_fun = bc
+    # for n in range(n_dof_constrained):
+    #     g = diff(bound_cond_fun(t), t)
+    #     constrain_der_fun.append(g)
 
 
     # Evaluation of boundary conditions over time
@@ -188,7 +188,7 @@ def convection_diffusion(x_i,x_f,x_0,l,u_max,a,u_0,bound_cond_fun,t_i,t_f,n_el,n
     u_der_p = np.zeros((T.shape[0],T.shape[0]))
     for k,t in enumerate(T):
         for n in range(n_dof_constrained):
-            constrain[n]=bound_cond_fun(t)
+            constrain[n]=bc[n]
             constrain_der[n]=constrain_der_fun[n] #(t).evalf()
 
         u_p[:,k]     = constrain.T
@@ -216,7 +216,7 @@ def convection_diffusion(x_i,x_f,x_0,l,u_max,a,u_0,bound_cond_fun,t_i,t_f,n_el,n
     theta = 0.5
     el, time, u_f, u_p = time_integration(dof_el, n_el, dof, n_gauss, N, W, w, J, a_arr, dN, v_arr, dW, x_i, L_el,
                                                 x_e, A, sigma,
-                                                dof_constrained, bound_cond_fun, T, u_0, x, dt, theta, s)
+                                                dof_constrained, bc, T, u_0, x, dt, theta, s)
 
     from interpolation_module import interpolation
 

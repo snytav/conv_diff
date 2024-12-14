@@ -2,7 +2,7 @@ import numpy as np
 from sympy import *
 
 def time_integration(dof_el,n_el,dof,n_gauss, N, W, w, J,a_arr,dN,v_arr,dW,x_i,L_el,x_e,A,sigma,
-                     dof_constrained,bound_cond_fun,T,u_0,x,dt,theta,s):
+                     dof_constrained,bc,T,u_0,x,dt,theta,s):
 
     from element import Element, TimeMoment
 
@@ -69,9 +69,9 @@ def time_integration(dof_el,n_el,dof,n_gauss, N, W, w, J,a_arr,dN,v_arr,dW,x_i,L
     dof_free = dof - len(dof_constrained)
     n_dof_constrained = len(dof_constrained)
 
-    constrain_der_fun = []
+    constrain_der_fun = bc
     for n in range(n_dof_constrained):
-        g = diff(bound_cond_fun(t), t)
+        g = bc[n]
         constrain_der_fun.append(g)
 
     # Evaluation of boundary conditions over time
@@ -84,8 +84,8 @@ def time_integration(dof_el,n_el,dof,n_gauss, N, W, w, J,a_arr,dN,v_arr,dW,x_i,L
 
     for k, ti in enumerate(T):
         for n in range(n_dof_constrained):
-            constrain[n] = bound_cond_fun(ti)
-            constrain_der[n] = diff(bound_cond_fun(t), t)
+            constrain[n] = bc[n]
+            constrain_der[n] = constrain_der_fun[n]
         u_p[:, k] = constrain.T
         u_der_p[:, k] = constrain_der.T
 
