@@ -19,6 +19,6 @@ def compare_plot(x_p,u_anal,n_el,el,x_i,x_f):
     plt.legend()
     plt.xlim(x_i ,x_f)
     plt.show(block=True)
-    yt_m = np.loadtxt('yt_final.txt')
-    d_yt = np.max(np.abs(yt -yt_m))
-    return xt,yt,d_yt
+    # yt_m = np.loadtxt('yt_final.txt')
+    # d_yt = np.max(np.abs(yt -yt_m))
+    return xt,yt

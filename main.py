@@ -203,7 +203,24 @@ f_f, f_p = constrain_vector(f, dof_constrained)
 u_0 = u_0_fun(x)
 u_0_f,_=constrain_vector(u_0,dof_constrained)
 
+from time_integr import time_integration
 
+el, time, u_f, u_p = time_integration(dof_el, n_el, dof, n_gauss, N, W, w, J, a_arr, dN, v_arr, dW, x_i, L_el,
+                                            x_e, A, sigma,
+                                            dof_constrained, bound_cond_fun, T, u_0_fun, x, dt, theta, s)
+
+from interpolation_module import interpolation
+
+el = interpolation(T, time, u_f, u_p, dof_constrained, n_el, dof_el, n_e, el)
+
+# Analytical solution
+from analytics import get_analytical_solution
+
+u_anal = get_analytical_solution(n_el, T, u_max, l, x_p, x_0, a, v)
+
+from plot_solution import compare_plot
+
+xt, yt = compare_plot(x_p, u_anal, n_el, el, x_i, x_f)
 
 
 qq = 0
