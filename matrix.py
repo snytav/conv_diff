@@ -23,7 +23,7 @@ def element_convection_matrix(a,dof_el,n_gauss,dN,W,w,J):
         for j in range(dof_el):
             for nn in range(n_gauss):
                 C[i][j]=C[i][j]+(W[i,nn]*dN[j,nn])*w[nn]
-            C[i][j]=a*C[i][j]
+          #  C[i][j]=a*C[i][j]
     #C.requires_grad = True
     C = a*C
     return C
