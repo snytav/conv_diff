@@ -66,7 +66,7 @@ class Element:
 #                                         # (2/3 = Galerkin)
 #                                         # ( 1  = Backward Euler)
 
-def convection_diffusion(x_i,x_f,x_0,l,u_max,a,u_0,bc,t_i,t_f,n_el,n_gauss,polynomial_degree):
+def convection_diffusion(x_i,x_f,x_0,l,u_max,a,u_0,bc,t_i,t_f,n_el,n_gauss,polynomial_degree,a_arr,v_arr):
 
     # # # Derived parameters
     def s_fun(x):
@@ -93,8 +93,8 @@ def convection_diffusion(x_i,x_f,x_0,l,u_max,a,u_0,bc,t_i,t_f,n_el,n_gauss,polyn
     T=np.arange(t_i,t_f,dt)                  # Time vector
     dof_constrained = [0,dof-1]                # Degree of freedom constrained
     # Evaluation of beta
-    v_arr = v*np.ones(n_el)
-    a_arr = a*np.ones(n_el)
+    # v_arr = v*np.ones(n_el)
+    # a_arr = a*np.ones(n_el)
     sigma = 0.0
 
     beta = 0
