@@ -65,12 +65,14 @@ class Element:
 #                                         # (1/2 = Crank-Nicolson)
 #                                         # (2/3 = Galerkin)
 #                                         # ( 1  = Backward Euler)
+ # # # Derived parameters
+def s_fun(x):
+    return 0                             # Source term
+
 
 def convection_diffusion(x_i,x_f,x_0,l,u_max,a,u_0,bc,t_i,t_f,n_el,n_gauss,polynomial_degree,a_arr,v_arr):
 
-    # # # Derived parameters
-    def s_fun(x):
-        return 0                             # Source term
+
     L=x_f-x_i                                # Domain length
     n_np=polynomial_degree*n_el+1            # Number of nodal points
     n_eq=polynomial_degree*n_el-1            # Number of equations
