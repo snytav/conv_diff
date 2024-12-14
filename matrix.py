@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 
 
 def element_mass_matrix(dof_el,n_gauss,N,W,w,J):
@@ -17,11 +18,14 @@ def element_mass_matrix(dof_el,n_gauss,N,W,w,J):
 def element_convection_matrix(a,dof_el,n_gauss,dN,W,w,J):
     # Element convection matrix
     C=np.zeros((dof_el,dof_el))
+
     for i in range(dof_el):
         for j in range(dof_el):
             for nn in range(n_gauss):
                 C[i][j]=C[i][j]+(W[i,nn]*dN[j,nn])*w[nn]
             C[i][j]=a*C[i][j]
+    #C.requires_grad = True
+    C = a*C
     return C
 
 def assemble_diffusion_matrix(el,dof,n_el,dof_el,A):

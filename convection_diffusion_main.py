@@ -74,10 +74,10 @@ x = np.linspace(x_i,x_f,n_el+1)          # Space vector
 u_0 = u_0_fun(x)
 a_arr = np.ones(n_el)
 v_arr = np.ones(n_el)*0.1
-a_arr = torch.from_numpy(a_arr)  # convection velocity
-a_arr.requires_grad = True
-v_arr = torch.from_numpy(v_arr)  # diffusion coefficient
-v_arr.requires_grad = True
+# a_arr = torch.from_numpy(a_arr)  # convection velocity
+# a_arr.requires_grad = True
+# v_arr = torch.from_numpy(v_arr)  # diffusion coefficient
+# v_arr.requires_grad = True
 xt,yt = convection_diffusion(x_i,x_f,x_0,u_max,l,a,u_0,[0,0],t_i,t_f,n_el,n_gauss,polynomial_degree,a_arr,v_arr)
 
 # # # Derived parameters
