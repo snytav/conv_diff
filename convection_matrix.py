@@ -1,9 +1,10 @@
 import numpy as np
+import torch
 
 def assemble_convection_matrix(el,dof,n_el,dof_el,A):
 
     # Assemblage of convection matrix
-    C=np.zeros((dof,dof))
+    C=torch.zeros((dof,dof))
     for n in range(n_el):
         for i in range(dof_el):
             for j in range(dof_el):

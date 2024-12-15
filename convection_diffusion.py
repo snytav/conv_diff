@@ -166,7 +166,7 @@ def convection_diffusion(x_i,x_f,x_0,l,u_max,a,u_0,bc,t_i,t_f,n_el,n_gauss,polyn
     K = assemble_diffusion_matrix(el,dof,n_el,dof_el,A)
 
     # Convection+Diffusion+Reaction matrix
-    D=C+K+sigma*M
+    D=C+K  #+sigma*M
 
     # Assemblage of load vector
     from load_vector import assemble_load_vector
