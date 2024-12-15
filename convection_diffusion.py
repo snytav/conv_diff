@@ -232,7 +232,7 @@ def convection_diffusion(x_i,x_f,x_0,l,u_max,a,u_0,bc,t_i,t_f,n_el,n_gauss,polyn
     from plot_solution import compare_plot
 
     xt, yt = compare_plot(x_p, u_anal, n_el, el, x_i, x_f)
-    return xt,yt
+    return xt,yt,u_f
 
 
 qq = 0

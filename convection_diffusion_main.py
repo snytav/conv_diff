@@ -78,7 +78,7 @@ a_arr = torch.from_numpy(a_arr)  # convection velocity
 a_arr.requires_grad = True
 v_arr = torch.from_numpy(v_arr)  # diffusion coefficient
 v_arr.requires_grad = True
-xt,yt = convection_diffusion(x_i,x_f,x_0,u_max,l,a,u_0,[0,0],t_i,t_f,n_el,n_gauss,polynomial_degree,a_arr,v_arr)
+xt,yt,u_f = convection_diffusion(x_i,x_f,x_0,u_max,l,a,u_0,[0,0],t_i,t_f,n_el,n_gauss,polynomial_degree,a_arr,v_arr)
 
 # # # Derived parameters
 
