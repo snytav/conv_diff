@@ -2,6 +2,7 @@ import numpy as np
 
 def data_all_dof(u_f, u_p, dof_constrained):
     # Data for all DOF
+    u_f = u_f.detach().numpy()
     N = len(u_f) + len(u_p)
     u = np.zeros(N)
 
