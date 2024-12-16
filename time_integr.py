@@ -2,6 +2,23 @@ import numpy as np
 import torch
 from sympy import *
 
+def get_bb_1(M_ff,dt,theta,D_ff,u_f,m_fp,u_der_p,u_p,M_fp,D_fp,k):
+    bb = torch.matmul(torch.from_numpy(M_ff) - dt * (1 - theta) * D_ff.double(), u_f[k, :])
+
+    bb_1 = dt * theta * (torch.matmul(torch.from_numpy(M_fp),
+                                      torch.from_numpy(u_der_p[:, k + 1]).reshape(u_der_p[:, k + 1].shape[0], 1))
+                         + torch.matmul(D_fp.double(),
+                                        torch.from_numpy(u_p[:, k + 1].reshape(u_p[:, k + 1].shape[0], 1))
+                                        )
+                         )
+    bb_2 = dt * (1.0 - theta) * (
+                torch.matmul(torch.from_numpy(M_fp), torch.from_numpy(u_der_p[:, k]).reshape(u_der_p[:, k].shape[0], 1))
+                + torch.matmul(D_fp.double(), torch.from_numpy(u_p[:, k]).reshape(u_p[:, k].shape[0], 1)))
+    bb += bb_1.reshape(bb_1.shape[0]) + bb_2.reshape(bb_2.shape[0])
+    return bb
+
+
+
 def time_integration(dof_el,n_el,dof,n_gauss, N, W, w, J,a_arr,dN,v_arr,dW,x_i,L_el,x_e,A,sigma,
                      dof_constrained,bc,T,u_0,x,dt,theta,s):
 
@@ -133,16 +150,7 @@ def time_integration(dof_el,n_el,dof,n_gauss, N, W, w, J,a_arr,dN,v_arr,dW,x_i,L
         br = torch.from_numpy(br)
         br -= res.reshape(res.shape[0])  # *u_p[:,k+1]
         # matlab dimensionality is (149,2) X( 2,1) resulting in 149,1
-        bb = torch.matmul(torch.from_numpy(M_ff) - dt * (1 - theta) * D_ff.double() , u_f[k, :])
-
-        bb_1 = dt * theta * (torch.matmul(torch.from_numpy(M_fp), torch.from_numpy(u_der_p[:, k + 1]).reshape(u_der_p[:, k + 1].shape[0], 1))
-                             + torch.matmul(D_fp.double(),
-                                            torch.from_numpy(u_p[:, k + 1].reshape(u_p[:, k + 1].shape[0], 1))
-                                            )
-                             )
-        bb_2 = dt * (1.0 - theta) * (torch.matmul(torch.from_numpy(M_fp), torch.from_numpy(u_der_p[:, k]).reshape(u_der_p[:, k].shape[0], 1))
-                                     + torch.matmul(D_fp.double(), torch.from_numpy(u_p[:, k]).reshape(u_p[:, k].shape[0], 1)))
-        bb += bb_1.reshape(bb_1.shape[0]) + bb_2.reshape(bb_2.shape[0])
+        bb = get_bb_1(M_ff, dt, theta, D_ff, u_f, M_fp, u_der_p, u_p, M_fp, D_fp,k)
 
 
 
