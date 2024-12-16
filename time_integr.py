@@ -115,30 +115,13 @@ def time_integration(dof_el,n_el,dof,n_gauss, N, W, w, J,a_arr,dN,v_arr,dW,x_i,L
 
     u_0_f, _ = constrain_vector(u_0, dof_constrained)
 
-    # Unsteady convectio-diffusion-reaction solution
+    # Unsteady convection-diffusion-reaction solution
     u_f = torch.zeros((T.shape[0] + 1, u_0_f.shape[0]))
     # Time integration
     u_f[0, :] = torch.from_numpy(u_0_f)
     u_f = u_f.double()
     for k, t in enumerate(T):
         MM = (torch.from_numpy(M_ff) + dt * theta * D_ff)
-       # MM_m = np.loadtxt('TimeMatrix_m.txt')
-       #  MM_m = MM_m.reshape(MM.shape)
-       #  d_MM = np.max(np.abs(MM - MM_m))
-       #  u_p_m = np.loadtxt('u_p' + '_' + str(k + 1) + '.txt')
-       #  d_u_p = np.max(np.abs(u_p[:, k + 1] - u_p_m))
-       #  D_fp_m = np.loadtxt('D_fp' + '_' + str(k + 1) + '.txt')
-       #  d_D_fp = np.max(np.abs(D_fp - D_fp_m.reshape(D_fp.shape)))
-       #  u_der_p_m = np.loadtxt('u_der_p' + '_' + str(k + 1) + '.txt')
-       #  d_u_der_p = np.max(np.abs(u_der_p_m - u_der_p[:, k + 1]))
-       #  M_fp_m = np.loadtxt('M_fp' + '_' + str(k + 1) + '.txt')
-       #  d_M_fp = np.max(np.abs(M_fp_m.reshape(M_fp.shape) - M_fp))
-        # M_fp_m = np.loadtxt('M_fp' +'_'+  str(k+1) + '.txt')
-        # d_M_fp = np.max(np.abs(M_fp_m - M_fp))
-        # M_fp_m = np.loadtxt('M_fp' +'_'+  str(k+1) + '.txt')
-        # d_M_fp = np.max(np.abs(M_fp_m - M_fp))
-        # f_f_m = np.loadtxt('f_f_' + str(k + 1) + '.txt')
-        # d_f_f = np.max(np.abs(f_f_m - f_f))
 
         # the operation M_fp*u_der_p[:,k+1] probably needs matrix multiplication
         A = M_fp
@@ -157,73 +140,27 @@ def time_integration(dof_el,n_el,dof,n_gauss, N, W, w, J,a_arr,dN,v_arr,dW,x_i,L
         print(k, a_arr.grad, v_arr.grad)
         # matlab dimensionality is (149,2) X( 2,1) resulting in 149,1
         bb = torch.matmul(torch.from_numpy(M_ff) - dt * (1 - theta) * D_ff.double() , u_f[k, :])
-        # checking availability of grad
-        # lf = torch.max(torch.abs(bb))
-        # lf.backward(retain_graph=True)
-        # print(k, a_arr.grad, v_arr.grad)
 
-        # bb_m = np.loadtxt('bb_' + str(k + 1) + '.txt')
-        # uf_init_m = np.loadtxt('uf_init_m_' + str(k + 1) + '.txt')  # uf_init_m_
-        # d_uf_init = np.max(np.abs(u_f[k, :] - uf_init_m))
-        # d_bb too big at k == 2
-        # d_bb_init = np.max(np.abs(bb - bb_m))
-        # Matlab     dt*theta*(f_f-M_fp*u_der_p(:,k+1)-D_fp*u_p(:,k+1))
         bb_1 = dt * theta * (torch.matmul(torch.from_numpy(M_fp), torch.from_numpy(u_der_p[:, k + 1]).reshape(u_der_p[:, k + 1].shape[0], 1))
                              + torch.matmul(D_fp.double(),
                                             torch.from_numpy(u_p[:, k + 1].reshape(u_p[:, k + 1].shape[0], 1))
                                             )
                              )
-        # lf = torch.max(torch.abs(bb_1))
-        # lf.backward(retain_graph=True)
-        # print(k, a_arr.grad, v_arr.grad)
-        # bb1 = dt*theta*(f_f- bb_1.reshape(bb_1.shape[0],) - bb_2.reshape(bb_2.shape[0],))
-
-        # bb1_m = np.loadtxt('bb_u_f_1_' + str(k + 1) + '.txt')
-        # d_bb1 = np.max(np.abs(bb_1 - bb1_m))
-
-        # matlab bb_2 = dt*(1-theta)*(f_f-M_fp*u_der_p(:,k)-D_fp*u_p(:,k))
         bb_2 = dt * (1.0 - theta) * (torch.matmul(torch.from_numpy(M_fp), torch.from_numpy(u_der_p[:, k]).reshape(u_der_p[:, k].shape[0], 1))
                                      + torch.matmul(D_fp.double(), torch.from_numpy(u_p[:, k]).reshape(u_p[:, k].shape[0], 1)))
-        # lf = torch.max(torch.abs(bb_2))
-        # lf.backward(retain_graph=True)
-        # print(k, a_arr.grad, v_arr.grad)
-        # bb_2_m = np.loadtxt('bb_u_f_2_' + str(k + 1) + '.txt')
-        # d_bb2 = np.max(np.abs(bb_2 - bb_2_m))
-
-        # bb_final_m = np.loadtxt('bb_final_' + str(k + 1) + '.txt')
-        # d_bb_final = np.max(np.abs(bb_final_m))
         bb += bb_1.reshape(bb_1.shape[0]) + bb_2.reshape(bb_2.shape[0])
-        # checking availability of grad
-        # lf = torch.max(torch.abs(bb))
-        # lf.backward(retain_graph=True)
-        # print(k,a_arr.grad,v_arr.grad)
 
 
 
-        # d_bb_final = np.max(np.abs(bb - bb_final_m))
 
-        # bb += dt*(1-theta)*(f_f-np.matmul(M_fp,u_der_p[:,k].reshape(u_der_p[:,k].shape[0],1))
-        #                     -np.matmul(D_fp,u_p[:,k].reshape(u_p[:,k].shape[0],1)))
 
         bb2_1 = np.matmul(M_fp, u_der_p[:, k].reshape(u_der_p[:, k].shape[0], 1))
         bb2_2 = torch.matmul(D_fp.double(), torch.from_numpy(u_der_p)[:, k + 1].reshape(u_p[:, k + 1].shape[0], 1))
         bb2 = dt * (1 - theta) * (torch.from_numpy(f_f) - bb2_1.reshape(torch.from_numpy(bb2_1).shape[0]) - bb2_2.reshape(bb2_2.shape[0]))
-        #
-        # bb2_m = np.loadtxt('bb2_' + str(k + 1) + '.txt')
-        # d_bb2 = np.max(np.abs(bb2 - bb2_m))
 
         bb += bb2
-        # lf = torch.max(torch.abs(bb))
-        # lf.backward(retain_graph=True)
-        # print(k, a_arr.grad, v_arr.grad)
 
         tv = torch.linalg.solve(torch.from_numpy(M_ff) + dt * theta * D_ff, bb)
-        # tv_m = np.loadtxt('time_vector_' + str(k + 1) + '.txt')
-        # d_tv = np.max(np.abs(tv - tv_m))
-        # lf = torch.max(torch.abs(tv))
-        # lf.backward(retain_graph=True)
-        # print(k, a_arr.grad, v_arr.grad)
-        # print(k, d_tv)
         u_f[k + 1, :] = tv
 
     return el,time,u_f,u_p
