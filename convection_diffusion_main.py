@@ -81,7 +81,7 @@ v_arr.requires_grad = True
 torch.autograd.set_detect_anomaly(True)
 xt,yt,u_f = convection_diffusion(x_i,x_f,x_0,u_max,l,a,u_0,[0,0],t_i,t_f,n_el,n_gauss,polynomial_degree,a_arr,v_arr)
 lf = torch.max(torch.abs(torch.ones_like(u_f)-u_f))
-lf.backward()
+lf.backward(retain_graph=True)
 # # # Derived parameters
 
 L=x_f-x_i                                # Domain length
