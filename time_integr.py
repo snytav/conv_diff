@@ -17,6 +17,18 @@ def get_bb_1(M_ff,dt,theta,D_ff,u_f,m_fp,u_der_p,u_p,M_fp,D_fp,k):
     bb += bb_1.reshape(bb_1.shape[0]) + bb_2.reshape(bb_2.shape[0])
     return bb
 
+def prepare_bb(M_fp,u_der_p,f_f,u_p,D_fp,k):
+    A = M_fp
+    b = u_der_p[:, k + 1]
+    x = np.matmul(A, b)
+    br = f_f - x
+    upk = u_p[:, k + 1].reshape(u_p[:, k + 1].shape[0], 1)
+    res = torch.matmul(D_fp.double(), torch.from_numpy(upk))
+    br = torch.from_numpy(br)
+    br -= res.reshape(res.shape[0])  # *u_p[:,k+1]
+    return
+
+
 def get_bb2(M_fp,u_der_p,k,D_fp,u_p,theta,f_f,dt):
         bb2_1 = np.matmul(M_fp, u_der_p[:, k].reshape(u_der_p[:, k].shape[0], 1))
         bb2_2 = torch.matmul(D_fp.double(), torch.from_numpy(u_der_p)[:, k + 1].reshape(u_p[:, k + 1].shape[0], 1))
@@ -146,14 +158,7 @@ def time_integration(dof_el,n_el,dof,n_gauss, N, W, w, J,a_arr,dN,v_arr,dW,x_i,L
         MM = (torch.from_numpy(M_ff) + dt * theta * D_ff)
 
         # the operation M_fp*u_der_p[:,k+1] probably needs matrix multiplication
-        A = M_fp
-        b = u_der_p[:, k + 1]
-        x = np.matmul(A, b)
-        br = f_f - x
-        upk = u_p[:, k + 1].reshape(u_p[:, k + 1].shape[0], 1)
-        res = torch.matmul(D_fp.double(), torch.from_numpy(upk))
-        br = torch.from_numpy(br)
-        br -= res.reshape(res.shape[0])  # *u_p[:,k+1]
+        prepare_bb(M_fp, u_der_p, f_f, u_p, D_fp, k)
         # matlab dimensionality is (149,2) X( 2,1) resulting in 149,1
         bb = get_bb_1(M_ff, dt, theta, D_ff, u_f, M_fp, u_der_p, u_p, M_fp, D_fp,k)
 
