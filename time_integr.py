@@ -158,7 +158,7 @@ def time_integration(dof_el,n_el,dof,n_gauss, N, W, w, J,a_arr,dN,v_arr,dW,x_i,L
         MM = (torch.from_numpy(M_ff) + dt * theta * D_ff)
 
         # the operation M_fp*u_der_p[:,k+1] probably needs matrix multiplication
-        prepare_bb(M_fp, u_der_p, f_f, u_p, D_fp, k)
+        #prepare_bb(M_fp, u_der_p, f_f, u_p, D_fp, k)
         # matlab dimensionality is (149,2) X( 2,1) resulting in 149,1
         bb = get_bb_1(M_ff, dt, theta, D_ff, u_f, M_fp, u_der_p, u_p, M_fp, D_fp,k)
 
