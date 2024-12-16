@@ -130,14 +130,8 @@ def time_integration(dof_el,n_el,dof,n_gauss, N, W, w, J,a_arr,dN,v_arr,dW,x_i,L
         br = f_f - x
         upk = u_p[:, k + 1].reshape(u_p[:, k + 1].shape[0], 1)
         res = torch.matmul(D_fp.double(), torch.from_numpy(upk))
-        lf = torch.max(torch.abs(res))
-        lf.backward(retain_graph=True)
-        print(k, a_arr.grad, v_arr.grad)
         br = torch.from_numpy(br)
         br -= res.reshape(res.shape[0])  # *u_p[:,k+1]
-        lf = torch.max(torch.abs(br))
-        lf.backward(retain_graph=True)
-        print(k, a_arr.grad, v_arr.grad)
         # matlab dimensionality is (149,2) X( 2,1) resulting in 149,1
         bb = torch.matmul(torch.from_numpy(M_ff) - dt * (1 - theta) * D_ff.double() , u_f[k, :])
 
