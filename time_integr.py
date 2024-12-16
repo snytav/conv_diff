@@ -3,7 +3,19 @@ import torch
 from sympy import *
 
 def get_bb_1(M_ff,dt,theta,D_ff,u_f,m_fp,u_der_p,u_p,M_fp,D_fp,k):
-    bb = torch.matmul(torch.from_numpy(M_ff) - dt * (1 - theta) * D_ff.double(), u_f[k, :])
+    M_ff = torch.from_numpy(M_ff)
+    M_ff.requires_grad=True
+    M2   = - dt * (1 - theta) * D_ff.double()
+    column = u_f[k, :]
+    #column.requires_grad=True
+    bb = torch.matmul(M_ff+M2, column)
+    lf = torch.max(torch.abs(M_ff))
+    lf.backward(retain_graph=True)
+    lf2 = torch.max(torch.abs(M2))
+    lf2.backward(retain_graph=True)
+
+    lf3 = torch.max(torch.abs(column))
+    lf3.backward(retain_graph=True)
 
     bb_1 = dt * theta * (torch.matmul(torch.from_numpy(M_fp),
                                       torch.from_numpy(u_der_p[:, k + 1]).reshape(u_der_p[:, k + 1].shape[0], 1))
@@ -30,9 +42,9 @@ def prepare_bb(M_fp,u_der_p,f_f,u_p,D_fp,k):
 
 
 def get_bb2(M_fp,u_der_p,k,D_fp,u_p,theta,f_f,dt):
-        bb2_1 = np.matmul(M_fp, u_der_p[:, k].reshape(u_der_p[:, k].shape[0], 1))
-        bb2_2 = torch.matmul(D_fp.double(), torch.from_numpy(u_der_p)[:, k + 1].reshape(u_p[:, k + 1].shape[0], 1))
-        bb2 = dt * (1 - theta) * (torch.from_numpy(f_f) - bb2_1.reshape(torch.from_numpy(bb2_1).shape[0]) - bb2_2.reshape(bb2_2.shape[0]))
+        bb2_1 = torch.matmul(M_fp, u_der_p[:, k].reshape(u_der_p[:, k].shape[0], 1))
+        bb2_2 = torch.matmul(D_fp.double(), u_der_p[:, k + 1].reshape(u_p[:, k + 1].shape[0], 1))
+        bb2 = dt * (1 - theta) * (torch.from_numpy(f_f) - bb2_1.reshape(bb2_1.shape[0]) - bb2_2.reshape(bb2_2.shape[0]))
         return bb2
 
 
@@ -153,6 +165,7 @@ def time_integration(dof_el,n_el,dof,n_gauss, N, W, w, J,a_arr,dN,v_arr,dW,x_i,L
     u_f = torch.zeros((T.shape[0] + 1, u_0_f.shape[0]))
     # Time integration
     u_f[0, :] = torch.from_numpy(u_0_f)
+    u_f.requires_grad = True
     u_f = u_f.double()
     for k, t in enumerate(T):
         MM = (torch.from_numpy(M_ff) + dt * theta * D_ff)
@@ -161,15 +174,28 @@ def time_integration(dof_el,n_el,dof,n_gauss, N, W, w, J,a_arr,dN,v_arr,dW,x_i,L
         #prepare_bb(M_fp, u_der_p, f_f, u_p, D_fp, k)
         # matlab dimensionality is (149,2) X( 2,1) resulting in 149,1
         bb = get_bb_1(M_ff, dt, theta, D_ff, u_f, M_fp, u_der_p, u_p, M_fp, D_fp,k)
+        lf = torch.max(torch.abs(bb))
+        lf.backward(retain_graph=True)
+        print(k,v_arr.grad)
 
 
 
 
         #!!!!!!!!!!!!!!!!!
 
+        u_der_p = torch.from_numpy(u_der_p)
+        u_der_p.requires_grad = True
+        M_fp = torch.from_numpy(M_fp)
+        M_fp.requires_grad = True
         bb += get_bb2(M_fp,u_der_p,k,D_fp,u_p,theta,f_f,dt)
+
 
         tv = torch.linalg.solve(torch.from_numpy(M_ff) + dt * theta * D_ff, bb)
         u_f[k + 1, :] = tv
+        lb = torch.max(torch.abs(u_der_p)) #+torch.max(torch.abs(D_fp))+torch.max(torch.abs(u_p))
+        lb.backward(retain_graph=True)
+        lf = torch.max(torch.abs(tv))
+        lf.backward(retain_graph=True)
+        print(k,v_arr.grad)
 
     return el,time,u_f,u_p
