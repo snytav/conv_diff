@@ -17,6 +17,11 @@ def get_bb_1(M_ff,dt,theta,D_ff,u_f,m_fp,u_der_p,u_p,M_fp,D_fp,k):
     bb += bb_1.reshape(bb_1.shape[0]) + bb_2.reshape(bb_2.shape[0])
     return bb
 
+def get_bb2(M_fp,u_der_p,k,D_fp,u_p,theta,f_f,dt):
+        bb2_1 = np.matmul(M_fp, u_der_p[:, k].reshape(u_der_p[:, k].shape[0], 1))
+        bb2_2 = torch.matmul(D_fp.double(), torch.from_numpy(u_der_p)[:, k + 1].reshape(u_p[:, k + 1].shape[0], 1))
+        bb2 = dt * (1 - theta) * (torch.from_numpy(f_f) - bb2_1.reshape(torch.from_numpy(bb2_1).shape[0]) - bb2_2.reshape(bb2_2.shape[0]))
+        return bb2
 
 
 def time_integration(dof_el,n_el,dof,n_gauss, N, W, w, J,a_arr,dN,v_arr,dW,x_i,L_el,x_e,A,sigma,
@@ -155,12 +160,9 @@ def time_integration(dof_el,n_el,dof,n_gauss, N, W, w, J,a_arr,dN,v_arr,dW,x_i,L
 
 
 
+        #!!!!!!!!!!!!!!!!!
 
-        bb2_1 = np.matmul(M_fp, u_der_p[:, k].reshape(u_der_p[:, k].shape[0], 1))
-        bb2_2 = torch.matmul(D_fp.double(), torch.from_numpy(u_der_p)[:, k + 1].reshape(u_p[:, k + 1].shape[0], 1))
-        bb2 = dt * (1 - theta) * (torch.from_numpy(f_f) - bb2_1.reshape(torch.from_numpy(bb2_1).shape[0]) - bb2_2.reshape(bb2_2.shape[0]))
-
-        bb += bb2
+        bb += get_bb2(M_fp,u_der_p,k,D_fp,u_p,theta,f_f,dt)
 
         tv = torch.linalg.solve(torch.from_numpy(M_ff) + dt * theta * D_ff, bb)
         u_f[k + 1, :] = tv
